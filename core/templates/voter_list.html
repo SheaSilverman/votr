@@ -1,0 +1,22 @@
+{% for voter in voters %}
+    {# Each "contact" is a Contact model object. #}
+    {{ voter.first_name|upper }} {{ voter.last_name|upper }}<br />
+<br />
+    
+{% endfor %}
+
+<div class="pagination">
+    <span class="step-links">
+        {% if voters.has_previous %}
+            <a href="?page={{ voters.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ voters.number }} of {{ voters.paginator.num_pages }}.
+        </span>
+
+        {% if voters.has_next %}
+            <a href="?page={{ voters.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
