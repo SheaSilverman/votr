@@ -1,22 +1,88 @@
-{% for voter in voters %}
-    {# Each "contact" is a Contact model object. #}
-    {{ voter.first_name|upper }} {{ voter.last_name|upper }}<br />
-<br />
-    
-{% endfor %}
+{% extends 'base.html' %}
+{% load staticfiles %}
 
-<div class="pagination">
-    <span class="step-links">
-        {% if voters.has_previous %}
-            <a href="?page={{ voters.previous_page_number }}">previous</a>
-        {% endif %}
+{% block content %}
+    <!-- Page Heading -->
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">
+                Dashboard <small>Voters Overview</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li class="active">
+                    <i class="fa fa-dashboard"></i> Voters
+                </li>
+            </ol>
+        </div>
+    </div>
+    <!-- /.row -->
 
-        <span class="current">
-            Page {{ voters.number }} of {{ voters.paginator.num_pages }}.
-        </span>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-globe fa-fw"></i> Voters</h3>
+                </div>
+                <div class="panel-body">
+                     <form action="#" method="post">
+                        {% csrf_token %}
+                        {{ form }}
+                        <input type="submit" value="Submit" />
+                    </form>
 
-        {% if voters.has_next %}
-            <a href="?page={{ voters.next_page_number }}">next</a>
-        {% endif %}
-    </span>
-</div>
+                    <div class="text-right">
+                        {% if voters.has_previous %}
+                            <a href="?page={{ voters.previous_page_number }}">previous</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Page {{ voters.number }} of {{ voters.paginator.num_pages }}.
+                        </span>
+
+                        {% if voters.has_next %}
+                            <a href="?page={{ voters.next_page_number }}">next</a>
+                        {% endif %} 
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>Voter Name</th>
+                                    <th>Address</th>
+                                    <th>Party</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    {% for voter in voters %}
+                                        <tr>
+                                            <td>{{ voter.id }}</td>
+                                            <td>{{ voter.first_name }} {{ voter.last_name }}</td>
+                                            <td>{{ voter.address1}} {{ voter.address2}} {{ voter.zipcode}}</td>
+                                            <td>{{ voter.party }}</td>
+                                    {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-right">
+                        
+                                {% if voters.has_previous %}
+                                    <a href="?page={{ voters.previous_page_number }}">previous</a>
+                                {% endif %}
+
+                                <span class="current">
+                                    Page {{ voters.number }} of {{ voters.paginator.num_pages }}.
+                                </span>
+
+                                {% if voters.has_next %}
+                                    <a href="?page={{ voters.next_page_number }}">next</a>
+                                {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.row -->
+{% endblock %}
