@@ -11,6 +11,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for csv_path in options['csv_path']:
             dataReader = csv.reader(open(csv_path), delimiter=',', quotechar='"')
+            voters = []
             for row in dataReader:
                 if row[0] != 'County': # Ignore the header row, import everything else
                     voter = Voter()
@@ -61,6 +62,5 @@ class Command(BaseCommand):
 
                     voter.latitude = row[38]
                     voter.longitude = row[39]
-                    voter.save()          
-
-                    self.stdout.write(self.style.SUCCESS('Successfully inserted "%s"' % voter.id))
+                    voters.append(voter)
+            Voter.objects.bulk_create(voters)

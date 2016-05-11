@@ -45,24 +45,46 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover table-striped">
-                            <thead>
-                                <tr>
-                                    <th>id</th>
-                                    <th>Voter Name</th>
-                                    <th>Address</th>
-                                    <th>Party</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                    {% for voter in voters %}
-                                        <tr>
-                                            <td>{{ voter.id }}</td>
-                                            <td>{{ voter.first_name }} {{ voter.last_name }}</td>
-                                            <td>{{ voter.address1}} {{ voter.address2}} {{ voter.zipcode}}</td>
-                                            <td>{{ voter.party }}</td>
-                                    {% endfor %}
-                            </tbody>
+                        <table id="voter_table" class="table table-bordered table-hover table-striped">
+                        <thead>
+                            <th>county</th>
+                            <th>voterID</th>
+                            <th>first_name</th>
+                            <th>last_name</th>
+                            <th>middle_name</th>
+                            <th>suffix</th>
+                            <th>exempt</th>
+                            <th>address1</th>
+                            <th>address2</th>
+                            <th>city</th>
+                            <th>state</th>
+                            <th>zipcode</th>
+                            <th>mailing_address1</th>
+                            <th>mailing_address2</th>
+                            <th>mailing_city</th>
+                            <th>mailing_state</th>
+                            <th>mailing_zipcode</th>
+                            <th>mailing_country</th>
+                            <th>gender</th>
+                            <th>race</th>
+                            <th>dob</th>
+                            <th>registration</th>
+                            <th>party</th>
+                            <th>precinct</th>
+                            <th>group</th>
+                            <th>split</th>
+                            <th>extra_suffix</th>
+                            <th>status</th>
+                            <th>state_house</th>
+                            <th>state_senate</th>
+                            <th>congress</th>
+                            <th>school_board</th>
+                            <th>email</th>
+                            <th>phone</th>
+                            <th>latitude</th>
+                            <th>longitude</th>
+                        </thead>
+                        <tbody></tbody>
                         </table>
                     </div>
                     <div class="text-right">
