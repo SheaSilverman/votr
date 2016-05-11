@@ -24,84 +24,34 @@
                     <h3 class="panel-title"><i class="fa fa-globe fa-fw"></i> Voters</h3>
                 </div>
                 <div class="panel-body">
-                     <form action="#" method="post">
-                        {% csrf_token %}
-                        {{ form }}
-                        <input type="submit" value="Submit" />
-                    </form>
 
-                    <div class="text-right">
-                        {% if voters.has_previous %}
-                            <a href="?page={{ voters.previous_page_number }}">previous</a>
-                        {% endif %}
-
-                        <span class="current">
-                            Page {{ voters.number }} of {{ voters.paginator.num_pages }}.
-                        </span>
-
-                        {% if voters.has_next %}
-                            <a href="?page={{ voters.next_page_number }}">next</a>
-                        {% endif %} 
-                    </div>
 
                     <div class="table-responsive">
                         <table id="voter_table" class="table table-bordered table-hover table-striped">
                         <thead>
-                            <th>county</th>
-                            <th>voterID</th>
                             <th>first_name</th>
                             <th>last_name</th>
-                            <th>middle_name</th>
                             <th>suffix</th>
                             <th>exempt</th>
                             <th>address1</th>
                             <th>address2</th>
                             <th>city</th>
-                            <th>state</th>
                             <th>zipcode</th>
-                            <th>mailing_address1</th>
-                            <th>mailing_address2</th>
-                            <th>mailing_city</th>
-                            <th>mailing_state</th>
-                            <th>mailing_zipcode</th>
-                            <th>mailing_country</th>
+                            
                             <th>gender</th>
-                            <th>race</th>
-                            <th>dob</th>
-                            <th>registration</th>
+
                             <th>party</th>
-                            <th>precinct</th>
-                            <th>group</th>
-                            <th>split</th>
-                            <th>extra_suffix</th>
+                            
                             <th>status</th>
-                            <th>state_house</th>
-                            <th>state_senate</th>
-                            <th>congress</th>
-                            <th>school_board</th>
+            
                             <th>email</th>
                             <th>phone</th>
-                            <th>latitude</th>
-                            <th>longitude</th>
+
                         </thead>
                         <tbody></tbody>
                         </table>
                     </div>
-                    <div class="text-right">
-                        
-                                {% if voters.has_previous %}
-                                    <a href="?page={{ voters.previous_page_number }}">previous</a>
-                                {% endif %}
-
-                                <span class="current">
-                                    Page {{ voters.number }} of {{ voters.paginator.num_pages }}.
-                                </span>
-
-                                {% if voters.has_next %}
-                                    <a href="?page={{ voters.next_page_number }}">next</a>
-                                {% endif %}
-
-                    </div>
+                   
                 </div>
             </div>
         </div>

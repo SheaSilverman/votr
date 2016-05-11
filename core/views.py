@@ -41,13 +41,11 @@ def voter_json(request):
 
 class VoterJson(BaseDatatableView):
     model = Voter
-    columns = ['county', 'voterID', 'first_name', 'last_name', 'middle_name', 'suffix', 'exempt',
-     'address1', 'address2', 'city', 'state', 'zipcode', 'mailing_address1', 'mailing_address2', 'mailing_city', 'mailing_state',
-     'mailing_zipcode', 'mailing_country', 'gender', 'race', 'dob', 'registration', 'party',
-     'precinct', 'group', 'split', 'extra_suffix', 'status', 'state_house', 'state_senate', 'congress', 'school_board', 
-     'email', 'phone', 'latitude', 'longitude']
-    order_columns = ['county', 'voterID', 'first_name', 'last_name', 'middle_name', 'suffix', 'exempt',
-     'address1', 'address2', 'city', 'state', 'zipcode', 'mailing_address1', 'mailing_address2', 'mailing_city', 'mailing_state',
-     'mailing_zipcode', 'mailing_country', 'gender', 'race', 'dob', 'registration', 'party',
-     'precinct', 'group', 'split', 'extra_suffix', 'status', 'state_house', 'state_senate', 'congress', 'school_board', 
-     'email', 'phone', 'latitude', 'longitude']
+    columns = ['first_name', 'last_name',  'suffix', 'exempt',
+     'address1', 'address2', 'city', 'zipcode',  'gender',  
+     'party', 'status', 'email', 'phone']
+     
+    order_columns = ['first_name', 'last_name',  'suffix', 'exempt',
+     'address1', 'address2', 'city', 'zipcode',  'gender',  
+     'party', 'status', 'email', 'phone']
+
