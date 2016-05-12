@@ -29,7 +29,6 @@ class Voter(models.Model):
 
 	mailing_address1 = models.CharField(max_length=200)
 	mailing_address2 = models.CharField(max_length=200)
-	mailing_address2 = models.CharField(max_length=200)
 	mailing_city = models.CharField(max_length=200)
 	mailing_state = models.CharField(max_length=200)
 	mailing_zipcode = models.CharField(max_length=200)
@@ -54,13 +53,12 @@ class Voter(models.Model):
 
 	email = models.CharField(max_length=200)
 	phone = models.CharField(max_length=200)
-	#party = models.ForeignKey(Party)
 	latitude = models.CharField(max_length=200)
 	longitude = models.CharField(max_length=200)
 
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
-
+	signature = models.BooleanField(default=False)
 
 
 class Account(models.Model):

@@ -22,4 +22,6 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^voter/$', views.voter, name='voter'),
     url(r'^voter/voter_json/', views.VoterJson.as_view(), name='voter_json'),
+    url(r'^voter/voter_signature/', views.voter_signature, name='voter_signature'),
+
 ]
