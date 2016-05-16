@@ -18,7 +18,8 @@ def index(request):
 
 def map(request):
     #return HttpResponse("Hi")
-    return render(request, 'map2.html')
+    map_key = 'CHANGEME'
+    return render(request, 'map2.html', {'map_key': map_key})
 
 def voter(request):
     voter_list = Voter.objects.all()
