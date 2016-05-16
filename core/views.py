@@ -5,6 +5,7 @@ from django.core import serializers
 from django.views.generic import ListView
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
+
 from models import Voter
 
 from django_datatables_view.base_datatable_view import BaseDatatableView
@@ -14,6 +15,10 @@ from django_datatables_view.base_datatable_view import BaseDatatableView
 def index(request):
     #return HttpResponse("Hi")
     return render(request, 'base.html')
+
+def map(request):
+    #return HttpResponse("Hi")
+    return render(request, 'map2.html')
 
 def voter(request):
     voter_list = Voter.objects.all()
@@ -55,5 +60,28 @@ def voter_signature(request):
         voter.save()
     except:
         return HttpResponse("Unable to update voter")
+
+    return HttpResponse("ok")
+
+@csrf_exempt
+def voter_map(request):
+    print "hellO"
+    print request.POST
+    try:
+        neLAT = float(request.POST.get("neLAT"))
+        seLAT = float(request.POST.get("seLAT"))
+        neLNG = float(request.POST.get("neLNG"))
+        swLNG = float(request.POST.get("swLNG"))
+
+    except:
+        return HttpResponse("Parameters not formatted correctly")
+    
+    try:
+        voters = Voter.objects.filter(latitude__lt=neLAT, latitude__gt=seLAT, longitude__lt=neLNG, longitude__gt=swLNG)
+        data = serializers.serialize("json", voters)
+        print "got data, sending"
+        return HttpResponse(data, content_type='application/json')
+    except:
+        return HttpResponse("Unable to grab voter")
 
     return HttpResponse("ok")
