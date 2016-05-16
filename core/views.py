@@ -10,6 +10,7 @@ from models import Voter
 
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
+map_key = 'CHANGEME'
 
 # Create your views here.
 def index(request):
@@ -18,7 +19,7 @@ def index(request):
 
 def map(request):
     #return HttpResponse("Hi")
-    map_key = 'CHANGEME'
+
     return render(request, 'map2.html', {'map_key': map_key})
 
 def voter(request):
@@ -34,7 +35,7 @@ def voter(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         voters = paginator.page(paginator.num_pages)
 
-    return render(request, 'voter_list.html', {'voters': voters})
+    return render(request, 'voter_list.html', {'voters': voters, 'map_key': map_key})
 
 class VoterJson(BaseDatatableView):
     model = Voter
