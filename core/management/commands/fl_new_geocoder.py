@@ -27,7 +27,7 @@ class Command(BaseCommand):
                         zipcode = row[4]
                         latitude, longitude = get_latlong(address1, address2, city, state, zipcode)
 
-                        voters = Voter.objects.filter(address1=address1, address2=address2, city=city, state=state,zipcode=zipcode)
+                        voters = Voter.objects.filter(address1=address1, address2=address2, city=city, zipcode=zipcode)
                         for v in voters:
                             v.longitude = longitude
                             v.latitude = latitude
@@ -48,10 +48,10 @@ class Command(BaseCommand):
                     print line
 
 
-def get_latlong(address1, address2, city, state, zipcode):
+def get_latlong(address1, address2, city,  zipcode):
     print address1
     try:
-        url = "%s%s %s %s %s %s" % (ngrok_url, address1, address2, city, state, zipcode)
+        url = "%s%s %s %s %s" % (ngrok_url, address1, address2,  state, zipcode)
         r = requests.get(url)
         parsed_json = r.json()
         longitude = parsed_json['features'][0]['geometry']['coordinates'][0]
