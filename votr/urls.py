@@ -17,6 +17,7 @@ from django.conf.urls import url
 from django.contrib import admin
 from core import views
 
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.index, name='index'),
@@ -24,5 +25,6 @@ urlpatterns = [
     url(r'^voter/voter_json/', views.VoterJson.as_view(), name='voter_json'),
     url(r'^voter/voter_signature/', views.voter_signature, name='voter_signature'),
     url(r'^voter/voter_map/', views.voter_map, name='voter_map'),
-    url(r'^map', views.map, name='map'),
+    url(r'^map/', views.map, name='map'),
+    url(r'^cluster/', views.cluster, name='cluster'),
 ]

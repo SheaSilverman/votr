@@ -25,7 +25,7 @@ class Command(BaseCommand):
                         city = row[2]
                         state = row[3]
                         zipcode = row[4]
-                        latitude, longitude = get_latlong(address1, address2, city, state, zipcode)
+                        latitude, longitude = get_latlong(address1, address2, city, zipcode)
 
                         voters = Voter.objects.filter(address1=address1, address2=address2, city=city, zipcode=zipcode)
                         for v in voters:
@@ -48,10 +48,10 @@ class Command(BaseCommand):
                     print line
 
 
-def get_latlong(address1, address2, city,  zipcode):
+def get_latlong(address1, address2, city, zipcode):
     print address1
     try:
-        url = "%s%s %s %s %s" % (ngrok_url, address1, address2,  state, zipcode)
+        url = "%s%s %s %s %s" % (ngrok_url, address1, address2, city, zipcode)
         r = requests.get(url)
         parsed_json = r.json()
         longitude = parsed_json['features'][0]['geometry']['coordinates'][0]
@@ -67,6 +67,6 @@ def get_csv_row(filename):
     #SELECT distinct address1, address2, city, state, zipcode
     #  FROM core_voter;
     with open(filename, "rb") as csvfile:
-        datareader = csv.reader(csvfile, delimiter=';', quotechar='"')
+        datareader = csv.reader(csvfile, delimiter=',', quotechar='"')
         for row in datareader:
             yield row

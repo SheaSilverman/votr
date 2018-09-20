@@ -10,7 +10,7 @@ from models import Voter
 
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
-map_key = 'CHANGEME'
+
 
 # Create your views here.
 def index(request):
@@ -20,7 +20,10 @@ def index(request):
 def map(request):
     #return HttpResponse("Hi")
 
-    return render(request, 'map2.html', {'map_key': map_key})
+    return render(request, 'map2.html')
+
+def cluster(request):
+    return render(request, 'clustermap.html')
 
 def voter(request):
     voter_list = Voter.objects.all()
@@ -35,17 +38,17 @@ def voter(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         voters = paginator.page(paginator.num_pages)
 
-    return render(request, 'voter_list.html', {'voters': voters, 'map_key': map_key})
+    return render(request, 'voter_list.html', {'voters': voters})
 
 class VoterJson(BaseDatatableView):
     model = Voter
     columns = ['voterID', 'first_name', 'last_name',  'suffix', 'exempt',
      'address1', 'address2', 'city', 'zipcode',  'gender',  
-     'party', 'status', 'email', 'phone', 'signature']
+     'party', 'status', 'email', 'phone', 'latitude', 'longitude']
      
     order_columns = ['voterID', 'first_name', 'last_name',  'suffix', 'exempt',
      'address1', 'address2', 'city', 'zipcode',  'gender',  
-     'party', 'status', 'email', 'phone', 'signature']
+     'party', 'status', 'email', 'phone']
 
 @csrf_exempt
 def voter_signature(request):
@@ -67,19 +70,19 @@ def voter_signature(request):
 
 @csrf_exempt
 def voter_map(request):
-    print "hellO"
+    print "hello"
     print request.POST
     try:
-        neLAT = float(request.POST.get("neLAT"))
-        seLAT = float(request.POST.get("seLAT"))
-        neLNG = float(request.POST.get("neLNG"))
-        swLNG = float(request.POST.get("swLNG"))
+        east = float(request.POST.get("east"))
+        west = float(request.POST.get("west"))
+        north = float(request.POST.get("north"))
+        south = float(request.POST.get("south"))
 
     except:
         return HttpResponse("Parameters not formatted correctly")
     
     try:
-        voters = Voter.objects.filter(latitude__lt=neLAT, latitude__gt=seLAT, longitude__lt=neLNG, longitude__gt=swLNG)
+        voters = Voter.objects.filter(latitude__lt=east, latitude__gt=west, longitude__lt=north, longitude__gt=south)
         data = serializers.serialize("json", voters)
         print "got data, sending"
         return HttpResponse(data, content_type='application/json')
@@ -87,3 +90,11 @@ def voter_map(request):
         return HttpResponse("Unable to grab voter")
 
     return HttpResponse("ok")
+
+# select * from core_voter where latitude >=-81.24831676483156  and latitude <=-81.21939182281496  and longitude >=28.59015539969054  and longitude <= 28.597691623705916 ;
+# console.log("select * from core_voter where latitude >=" + map.getBounds().getWest() + "  and latitude <=" + map.getBounds().getEast() + "  and longitude >=" + map.getBounds().getSouth() + "  and longitude <= " + map.getBounds().getNorth() + " ;");
+
+#           console.log(map.getBounds().getEast());
+#           console.log(map.getBounds().getWest());
+#           console.log(map.getBounds().getNorth());
+#           console.log(map.getBounds().getSouth());

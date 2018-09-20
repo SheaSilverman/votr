@@ -27,6 +27,16 @@
 
     <!-- Datatables -->
     <link rel="stylesheet" type="text/css" href="{% static 'css/datatables.min.css' %}"/>
+
+     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
+       integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+       crossorigin=""/>
+
+     <!-- Make sure you put this AFTER Leaflet's CSS -->
+     <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+       integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
+       crossorigin=""></script>
+
     <style>
 /* all map containers must be full height */
 html, body, .container-fluid, .row, .map { height: 100% }
@@ -137,11 +147,10 @@ html, body, .container-fluid, .row, .map { height: 100% }
     <!-- Datatables -->
     <script type="text/javascript" src="{% static 'js/datatables.min.js' %}"></script>
     
-    <script src="https://maps.googleapis.com/maps/api/js?key={{map_key}}&callback=initMap"
-    async defer></script>
+
     <script type="text/javascript" src="{% static 'js/voters.js' %}"></script>
-    
-    <script type="text/javascript" src="{% static 'js/map.js' %}"></script>
+    {% block js %}{% endblock %}
+
 </body>
 
 </html>

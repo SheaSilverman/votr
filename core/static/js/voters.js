@@ -3,16 +3,16 @@ $(document).ready(function() {
 		"processing": true,
 		"serverSide":  true,
 		"ajax":"voter_json/",	
-		// "deferRender": true,
-		"columnDefs": [
-			{
-				"render": function(data, type, row) {
-					console.log(data);
-					return "<input type='checkbox' class='signatureCheck' data-voteid='"+ row[0] +"' " + (data ? "checked" : "") + " />"; 
-				},
-				"targets": 14
-			}
-		]
+		"deferRender": true,
+		// "columnDefs": [
+		// 	{
+		// 		"render": function(data, type, row) {
+		// 			console.log(data);
+		// 			return "<input type='checkbox' class='signatureCheck' data-voteid='"+ row[0] +"' " + (data ? "checked" : "") + " />"; 
+		// 		},
+		// 		"targets": 14
+		// 	}
+		//]
 	});
 
 

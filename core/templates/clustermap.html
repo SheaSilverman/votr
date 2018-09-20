@@ -1,0 +1,290 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <!-- Page Heading -->
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">
+                Dashboard <small>Voters Overview</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li class="active">
+                    <i class="fa fa-dashboard"></i> Voters
+                </li>
+            </ol>
+        </div>
+    </div>
+    <!-- /.row -->
+
+    <div class="row">
+        
+        <div class="col-lg-12 map">
+            <div class="well">
+
+
+              <div id="map" style="height:1000px">TEST</div>
+            </div>
+        </div>
+        
+    </div>
+
+
+
+    <!-- /.row -->
+{% endblock %}
+
+
+{% block js %}
+
+
+    <script src="{% static 'js/leaflet/PruneCluster.js' %}"></script>
+
+    <script type="text/javascript">
+        var addressPoints = [
+                [28.581791, -81.24119, "2", 0],
+                [28.581791, -81.24119, "3", 0],
+                [28.581791, -81.24119, "9", 1]
+            ];
+
+        var tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Points &copy 2012 LINZ'
+            });
+
+
+        var leafletView = new PruneClusterForLeaflet();
+        leafletView.Cluster.Size = 87;
+        leafletView.BuildLeafletClusterIcon = function(cluster) {
+            var e = new L.Icon.MarkerCluster();
+            e.stats = cluster.stats;
+            e.population = cluster.population;
+            return e;
+        };
+        
+        latlng = L.latLng(28.581791, -81.24119, );
+
+        var map = L.map('map', {center: latlng, zoom: 13, layers: [tiles]});
+
+        var colors = ['red','blue', 'orange', 'gray'];
+        var pi2 = Math.PI * 2;
+
+        L.Icon.MarkerCluster = L.Icon.extend({
+                options: {
+                    iconSize: new L.Point(44, 44),
+                    className: 'prunecluster leaflet-markercluster-icon'
+                },
+                createIcon: function () {
+                // based on L.Icon.Canvas from shramov/leaflet-plugins (BSD licence)
+                var e = document.createElement('canvas');
+                this._setIconStyles(e, 'icon');
+                var s = this.options.iconSize;
+                if (L.Browser.retina) {
+                    e.width = s.x + s.x;
+                    e.height = s.y + s.y;
+                } else {
+                    e.width = s.x;
+                    e.height = s.y;
+                }
+                // this.draw(e.getContext('2d'), s.x, s.y);
+                this.draw(e.getContext('2d'), e.width, e.height);
+                return e;
+            },
+            createShadow: function () {
+                return null;
+            },
+            draw: function(canvas, width, height) {
+                var xa = 2, xb = 50, ya = 18, yb = 21;
+                var r = ya + (this.population - xa) * ((yb - ya) / (xb - xa));
+                var radiusMarker = Math.min(r, 21),
+                radiusCenter = 11,
+                center = width / 2;
+                if (L.Browser.retina) {
+                    canvas.scale(2, 2);
+                    center /= 2;
+                    canvas.lineWidth = 0.5;
+                }
+                canvas.strokeStyle = 'rgba(0,0,0,0.25)';
+                var start = 0, stroke = true;
+                for (var i = 0, l = colors.length; i < l; ++i) {
+                    var size = this.stats[i] / this.population;
+                    if (size > 0) {
+                        stroke = size != 1;
+                        canvas.beginPath();
+                        canvas.moveTo(center, center);
+                        canvas.fillStyle = colors[i];
+                        var from = start + 0.14,
+                        to = start + size * pi2;
+                        if (to < from || size == 1) {
+                            from = start;
+                        }
+                        canvas.arc(center, center, radiusMarker, from, to);
+                        start = start + size * pi2;
+                        canvas.lineTo(center, center);
+                        canvas.fill();
+                        if (stroke) {
+                            canvas.stroke();
+                        }
+                        canvas.closePath();
+                    }
+                }
+                if (!stroke) {
+                    canvas.beginPath();
+                    canvas.arc(center, center, radiusMarker, 0, Math.PI * 2);
+                    canvas.stroke();
+                    canvas.closePath();
+                }
+                canvas.beginPath();
+                canvas.fillStyle = 'white';
+                canvas.moveTo(center, center);
+                canvas.arc(center, center, radiusCenter, 0, Math.PI * 2);
+                canvas.fill();
+                canvas.closePath();
+                canvas.fillStyle = '#454545';
+                canvas.textAlign = 'center';
+                canvas.textBaseline = 'middle';
+                canvas.font = 'bold '+(this.population < 100 ? '12' : (this.population < 1000 ? '11' : '9'))+'px sans-serif';
+                canvas.fillText(this.population, center, center, radiusCenter*2);
+            }
+        });
+
+
+        for (var i = 0, l = addressPoints.length; i < l; ++i) {
+            var m = new PruneCluster.Marker(addressPoints[i][0], addressPoints[i][1], {title: addressPoints[i][2]}, addressPoints[i][3]);
+            leafletView.RegisterMarker(m);
+        }
+
+        leafletView.PrepareLeafletMarker = function (marker, data, category) {
+            if (marker.getPopup()) {
+                marker.setPopupContent(data.title + " - " + category);
+            } else {
+                marker.bindPopup(data.title + " - " + category);
+            }
+        };
+        map.addLayer(leafletView);
+
+
+        var mapJSON = $.post( "/voter/voter_map/", { east: map.getBounds().getEast(), west: map.getBounds().getWest(), north: map.getBounds().getNorth(), south: map.getBounds().getSouth() } )
+         .done(function( data ) {
+          //console.log(data[0]['fields']);
+          for (var i = 0; i < data.length; i++) { 
+            //console.log(data[i]['fields']['latitude'], data[i]['fields']['longitude']);
+                         
+            switch(data[i]['fields']['party']) {
+              case 'NPA':
+                  var color = 3;
+                  break;
+              case 'DEM':
+                  var color = 1;
+                  break;
+              case 'REP':
+                  var color = 0;
+                  break;    
+              default:
+                  var color = 2;
+            }
+
+            var m = new PruneCluster.Marker(data[i]['fields']['longitude'], data[i]['fields']['latitude'], {title: data[i]['fields']['party']}, color);
+            leafletView.RegisterMarker(m);
+          }
+
+          leafletView.PrepareLeafletMarker = function (marker, data, category) {
+            if (marker.getPopup()) {
+                marker.setPopupContent(data.title + " - " + category);
+            } else {
+                marker.bindPopup(data.title + " - " + category);
+            }
+          };
+          map.addLayer(leafletView);
+          // leafletView.RedrawIcons();
+          leafletView.ProcessView();
+          console.log("Done");
+        });
+
+
+
+
+
+
+
+        // for (var i = 0; i < addressPoints.length; i++) {
+        //     var a = addressPoints[i];
+        //     var title = a[2];
+        //     var marker = L.marker(new L.LatLng(a[0], a[1]), { title: title });
+        //     marker.bindPopup(title);
+        //     markers.addLayer(marker);
+        // }
+
+        // map.addLayer(markers);
+        
+
+        map.on("moveend", function () {
+          // Send the data using post
+          var mapJSON = $.post( "/voter/voter_map/", { east: map.getBounds().getEast(), west: map.getBounds().getWest(), north: map.getBounds().getNorth(), south: map.getBounds().getSouth() } );
+         
+          // Put the results in a div
+          mapJSON.done(function( data ) {
+            leafletView.RemoveMarkers();
+            //console.log(data[0]['fields']);
+            for (var i = 0; i < data.length; i++) { 
+              //console.log(data[i]['fields']['latitude'], data[i]['fields']['longitude']);
+                           
+              switch(data[i]['fields']['party']) {
+                case 'NPA':
+                    var color = 3;
+                    var myIcon = L.icon({
+                            iconUrl: "{% static 'img/gray-marker-icon.png' %}",
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41],
+                            popupAnchor: [0, -40],
+                        });
+                    break;
+                case 'DEM':
+                    var color = 1;
+                    var myIcon = L.icon({
+                            iconUrl: "{% static 'img/blue-marker-icon.png' %}",
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41],
+                            popupAnchor: [0, -40],
+                        });
+                    break;
+                case 'REP':
+                    var color = 0;
+                    var myIcon = L.icon({
+                            iconUrl: "{% static 'img/red-marker-icon.png' %}",
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41],
+                            popupAnchor: [0, -40],
+                        });
+                    break;    
+                default:
+                    var color = 2;
+                    var myIcon = L.divIcon({className: 'yellow-div-icon'});
+              }
+
+              var m = new PruneCluster.Marker(data[i]['fields']['longitude'], data[i]['fields']['latitude'], {title: data[i]['fields']['party']}, color);
+              m.data.icon = myIcon;
+              m.data.popup = "Hi there";
+              leafletView.RegisterMarker(m);
+            }
+
+            leafletView.PrepareLeafletMarker = function (marker, data, category) {
+              if (marker.getPopup()) {
+                  marker.setPopupContent(data.title + " - " + category);
+              } else {
+                  marker.bindPopup(data.title + " - " + category);
+              }
+              console.log(data.icon);
+              marker.setIcon(data.icon);
+            };
+            map.addLayer(leafletView);
+            console.log("Done again");
+            leafletView.ProcessView();
+        });
+      });
+
+
+        
+
+    </script>
+{% endblock %}
