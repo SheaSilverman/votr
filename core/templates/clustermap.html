@@ -22,8 +22,8 @@
         <div class="col-lg-12 map">
             <div class="well">
 
-
-              <div id="map" style="height:1000px">TEST</div>
+              <div >&nbsp; Status <span id="ajaxloader" style="display:none">Loading...</span></div>
+              <div id="map" style="height:400px">TEST</div>
             </div>
         </div>
         
@@ -64,7 +64,7 @@
         
         latlng = L.latLng(28.581791, -81.24119, );
 
-        var map = L.map('map', {center: latlng, zoom: 13, layers: [tiles]});
+        var map = L.map('map', {center: latlng, zoom: 20, layers: [tiles]});
 
         var colors = ['red','blue', 'orange', 'gray'];
         var pi2 = Math.PI * 2;
@@ -163,7 +163,7 @@
         };
         map.addLayer(leafletView);
 
-
+        $('#ajaxloader').show();
         var mapJSON = $.post( "/voter/voter_map/", { east: map.getBounds().getEast(), west: map.getBounds().getWest(), north: map.getBounds().getNorth(), south: map.getBounds().getSouth() } )
          .done(function( data ) {
           //console.log(data[0]['fields']);
@@ -199,6 +199,7 @@
           // leafletView.RedrawIcons();
           leafletView.ProcessView();
           console.log("Done");
+          $('#ajaxloader').hide();
         });
 
 
@@ -219,9 +220,10 @@
         
 
         map.on("moveend", function () {
+          $('#ajaxloader').show();
           // Send the data using post
           var mapJSON = $.post( "/voter/voter_map/", { east: map.getBounds().getEast(), west: map.getBounds().getWest(), north: map.getBounds().getNorth(), south: map.getBounds().getSouth() } );
-         
+
           // Put the results in a div
           mapJSON.done(function( data ) {
             leafletView.RemoveMarkers();
@@ -280,6 +282,7 @@
             map.addLayer(leafletView);
             console.log("Done again");
             leafletView.ProcessView();
+            $('#ajaxloader').hide();
         });
       });
 
