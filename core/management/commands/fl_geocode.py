@@ -14,8 +14,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         pool = ThreadPool(8)
-        pool.map(get_voter, xrange(Voter.objects.all().count()))
-
+        #pool.map(get_voter, xrange(Voter.objects.all().count()))
+        # objects = Voter.objects.filter(latitude__isnull=True)
+        # mylist = [obj.id for obj in objects]
+        pool.map(get_voter, get_row())
  
 def get_voter(id):
     print id
@@ -35,3 +37,8 @@ def get_voter(id):
         import sys, traceback
         print traceback.print_exc()
      
+
+def get_row():
+    objects = Voter.objects.filter(latitude__isnull=True)
+    for o in objects:
+        yield o.id

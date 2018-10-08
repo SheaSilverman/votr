@@ -10,17 +10,13 @@ from models import Voter
 
 from django_datatables_view.base_datatable_view import BaseDatatableView
 
-
+from .filters import VoterFilter
 
 # Create your views here.
 def index(request):
     #return HttpResponse("Hi")
     return render(request, 'base.html')
 
-def map(request):
-    #return HttpResponse("Hi")
-
-    return render(request, 'map2.html')
 
 def cluster(request):
     return render(request, 'clustermap.html')
@@ -50,6 +46,26 @@ class VoterJson(BaseDatatableView):
      'address1', 'address2', 'city', 'zipcode',  'gender',  
      'party', 'status', 'email', 'phone']
 
+    def filter_queryset(self, qs):
+        # use parameters passed in GET request to filter queryset
+
+        # simple example:
+        search = self.request.GET.get('search[value]', None)
+        if search:
+            qs = qs.filter(first_name__istartswith=search)
+
+        # more advanced example using extra parameters
+        # filter_customer = self.request.GET.get('customer', None)
+
+        # if filter_customer:
+        #     customer_parts = filter_customer.split(' ')
+        #     qs_params = None
+        #     for part in customer_parts:
+        #         q = Q(customer_firstname__istartswith=part)|Q(customer_lastname__istartswith=part)
+        #         qs_params = qs_params | q if qs_params else q
+        #     qs = qs.filter(qs_params)
+        return qs
+
 @csrf_exempt
 def voter_signature(request):
     try:
@@ -70,8 +86,8 @@ def voter_signature(request):
 
 @csrf_exempt
 def voter_map(request):
-    print "hello"
-    print request.POST
+    # print "hello"
+    # print request.POST
     try:
         east = float(request.POST.get("east"))
         west = float(request.POST.get("west"))
@@ -83,13 +99,19 @@ def voter_map(request):
     
     try:
         voters = Voter.objects.filter(latitude__lt=east, latitude__gt=west, longitude__lt=north, longitude__gt=south)
-        data = serializers.serialize("json", voters)
-        print "got data, sending"
+        voter_filter = VoterFilter(request.POST, queryset=voters)
+        #data = serializers.serialize("json", voters)
+        data = serializers.serialize("json", voter_filter.qs)
+        print(voter_filter)
+        # print "got data, sending"
         return HttpResponse(data, content_type='application/json')
-    except:
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        print e
         return HttpResponse("Unable to grab voter")
 
-    return HttpResponse("ok")
+    # return HttpResponse("ok")
 
 # select * from core_voter where latitude >=-81.24831676483156  and latitude <=-81.21939182281496  and longitude >=28.59015539969054  and longitude <= 28.597691623705916 ;
 # console.log("select * from core_voter where latitude >=" + map.getBounds().getWest() + "  and latitude <=" + map.getBounds().getEast() + "  and longitude >=" + map.getBounds().getSouth() + "  and longitude <= " + map.getBounds().getNorth() + " ;");
@@ -98,3 +120,11 @@ def voter_map(request):
 #           console.log(map.getBounds().getWest());
 #           console.log(map.getBounds().getNorth());
 #           console.log(map.getBounds().getSouth());
+
+
+
+
+def search(request):
+    voter_list = Voter.objects.all()
+    voter_filter = VoterFilter(request.GET, queryset=voter_list)
+    return render(request, 'user_list.html', {'filter': voter_filter})
