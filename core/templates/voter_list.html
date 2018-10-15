@@ -25,6 +25,7 @@
                 test
               </div> -->
 
+              <div >&nbsp; Status <span id="ajaxloader" style="display:none">Loading...</span></div>
               <div id="map" style="height:400px">TEST</div>
             </div>
         </div>
@@ -41,6 +42,14 @@
                 <div class="panel-body">
 
                     <div class="table-responsive">
+                        <table border="0" cellspacing="5" cellpadding="5">
+                            <tbody>
+                                <tr>
+                                    <td>Party:</td>
+                                    <td><input type="text" id="party" name="party"></td>
+                                </tr>
+                            </tbody>
+                        </table>
                         <table id="voter_table" class="table table-bordered table-hover table-striped">
                         <thead>
                             <th>voterID</th>
@@ -68,6 +77,30 @@
                         </thead>
                         <tbody>
                         </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>voterID</th>
+                                        <th>first_name</th>
+                                        <th>last_name</th>
+                                        <th>suffix</th>
+                                        <th>exempt</th>
+                                        <th>address1</th>
+                                        <th>address2</th>
+                                        <th>city</th>
+                                        <th>zipcode</th>
+                                        
+                                        <th>gender</th>
+
+                                        <th>party</th>
+                                        
+                                        <th>status</th>
+                        
+                                        <th>email</th>
+                                        <th>phone</th>
+                                        <th>latitude</th>
+                                        <th>longitude</th>
+                                    </tr>
+                                </tfoot>
 
                         </table>
                     </div>
@@ -81,58 +114,7 @@
 
 
 {% block js %}
-    <link rel="stylesheet" href="{% static 'css/leaflet/MarkerCluster.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/leaflet/MarkerCluster.Default.css' %}" />
-    <script src="{% static 'js/leaflet/leaflet.markercluster.js' %}"></script>
-    <script type="text/javascript">
-        var addressPoints = [
-                [28.581791, -81.24119, , "2"],
-                [28.581791, -81.24119, , "3"],
-                [28.581791, -81.24119, , "9"]
-            ];
+    <script src="{% static 'js/leaflet/PruneCluster.js' %}"></script>
+    <script src="{% static 'js/clustermap.js' %}"></script>
 
-        var tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 18,
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Points &copy 2012 LINZ'
-            }),
-        
-        latlng = L.latLng(28.581791, -81.24119, );
-
-        var map = L.map('map', {center: latlng, zoom: 13, layers: [tiles]});
-
-        var markers = L.markerClusterGroup();
-        
-        for (var i = 0; i < addressPoints.length; i++) {
-            var a = addressPoints[i];
-            var title = a[2];
-            var marker = L.marker(new L.LatLng(a[0], a[1]), { title: title });
-            marker.bindPopup(title);
-            markers.addLayer(marker);
-        }
-
-        map.addLayer(markers);
-        
-        // select * from core_voter where latitude <= 28.609390540801474 and latitude >= 28.54909233392102 and longitude >= -81.13059997558595 and longitude <= -81.36199951171876;
-
-        map.on("moveend", function () {
-          // console.log(map.getCenter().toString());
-          // console.log(map.getBounds()['_northEast']);
-          // console.log(map.getBounds()['_southWest']);
-          console.log(map.getBounds().getEast());
-          console.log(map.getBounds().getWest());
-          console.log(map.getBounds().getNorth());
-          console.log(map.getBounds().getSouth());
-          console.log("select * from core_voter where latitude >=" + map.getBounds().getWest() + "  and latitude <=" + map.getBounds().getEast() + "  and longitude >=" + map.getBounds().getSouth() + "  and longitude <= " + map.getBounds().getNorth() + " ;");
-          
-
-          var marker = L.marker(new L.LatLng(map.getBounds()['_northEast']['lat'], map.getBounds()['_northEast']['lng']), { title: "NorthEast" });
-          marker.bindPopup(title);
-          markers.addLayer(marker);
-
-          marker = L.marker(new L.LatLng(map.getBounds()['_southWest']['lat'], map.getBounds()['_southWest']['lng']), { title: "NorthEast" });
-          marker.bindPopup(title);
-          markers.addLayer(marker);
-        });
-
-    </script>
 {% endblock %}

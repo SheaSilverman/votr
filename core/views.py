@@ -46,25 +46,25 @@ class VoterJson(BaseDatatableView):
      'address1', 'address2', 'city', 'zipcode',  'gender',  
      'party', 'status', 'email', 'phone']
 
-    def filter_queryset(self, qs):
-        # use parameters passed in GET request to filter queryset
+    # def filter_queryset(self, qs):
+    #     # use parameters passed in GET request to filter queryset
 
-        # simple example:
-        search = self.request.GET.get('search[value]', None)
-        if search:
-            qs = qs.filter(first_name__istartswith=search)
+    #     # simple example:
+    #     search = self.request.GET.get('search[value]', None)
+    #     if search:
+    #         qs = qs.filter(first_name__istartswith=search)
 
-        # more advanced example using extra parameters
-        # filter_customer = self.request.GET.get('customer', None)
+    #     # more advanced example using extra parameters
+    #     # filter_customer = self.request.GET.get('customer', None)
 
-        # if filter_customer:
-        #     customer_parts = filter_customer.split(' ')
-        #     qs_params = None
-        #     for part in customer_parts:
-        #         q = Q(customer_firstname__istartswith=part)|Q(customer_lastname__istartswith=part)
-        #         qs_params = qs_params | q if qs_params else q
-        #     qs = qs.filter(qs_params)
-        return qs
+    #     # if filter_customer:
+    #     #     customer_parts = filter_customer.split(' ')
+    #     #     qs_params = None
+    #     #     for part in customer_parts:
+    #     #         q = Q(customer_firstname__istartswith=part)|Q(customer_lastname__istartswith=part)
+    #     #         qs_params = qs_params | q if qs_params else q
+    #     #     qs = qs.filter(qs_params)
+    #     return qs
 
 @csrf_exempt
 def voter_signature(request):
